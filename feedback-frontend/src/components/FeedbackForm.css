@@ -7,7 +7,7 @@
     padding: 1rem;
 }
 
-.contact-form {
+.feedback-form {
     width: 100%;
     max-width: 420px;
     background: #fff;
@@ -16,7 +16,7 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.contact-form h2 {
+.feedback-form h2 {
     text-align: center;
     color: #333;
     margin-bottom: 1.5rem;
