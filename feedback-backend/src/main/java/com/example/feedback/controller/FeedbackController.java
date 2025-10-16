@@ -1,5 +1,6 @@
 package com.example.feedback.controller;
 
+import com.example.feedback.dto.FeedbackResponse;
 import com.example.feedback.model.Feedback;
 import com.example.feedback.repository.FeedbackRepository;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +16,8 @@ public class FeedbackController {
     }
 
     @PostMapping("/submit")
-    public Feedback submitFeedback(@RequestBody Feedback feedbackRequest) {
-        return feedbackRepository.save(feedbackRequest);
+    public FeedbackResponse submitFeedback(@RequestBody Feedback feedbackRequest) {
+        Feedback feedback = feedbackRepository.save(feedbackRequest);
+        return new FeedbackResponse(feedback.getId(), feedback.getName(), feedback.getMessage());
     }
 }
