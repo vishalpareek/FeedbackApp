@@ -1,6 +1,7 @@
 package com.example.feedback.service;
 
 import com.example.feedback.dto.FeedbackResponse;
+import com.example.feedback.dto.FeedbackRequest;
 import com.example.feedback.model.Feedback;
 import com.example.feedback.repository.FeedbackRepository;
 import org.springframework.http.HttpStatus;
@@ -20,14 +21,19 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     @Override
-    public FeedbackResponse submitFeedback(Feedback feedbackRequest) {
+    public FeedbackResponse submitFeedback(FeedbackRequest feedbackRequest) {
         String maskedEmail = maskEmail(feedbackRequest.getEmail());
         logger.info("Received feedback request from email: {}", maskedEmail);
 
         validateFeedback(feedbackRequest, maskedEmail);
 
+        Feedback feedback = new Feedback();
+        feedback.setName(feedbackRequest.getName());
+        feedback.setEmail(feedbackRequest.getEmail());
+        feedback.setMessage(feedbackRequest.getMessage());
+
         try {
-            Feedback savedFeedback = feedbackRepository.save(feedbackRequest);
+            Feedback savedFeedback = feedbackRepository.save(feedback);
             logger.info("Feedback saved successfully for user: {}", savedFeedback.getName());
             logger.debug("Response DTO: id={}, name={}, message={}",
                     savedFeedback.getId(), savedFeedback.getName(), savedFeedback.getMessage());
@@ -38,12 +44,12 @@ public class FeedbackServiceImpl implements FeedbackService {
                     savedFeedback.getMessage()
             );
         } catch (Exception e) {
-            logger.error("Error saving feedback for id {}: {}", feedbackRequest.getId(), e.getMessage(), e);
+            logger.error("Error saving feedback: {}", e.getMessage(), e);
             throw e;
         }
     }
 
-    private void validateFeedback(Feedback feedback, String maskedEmail) {
+    private void validateFeedback(FeedbackRequest feedback, String maskedEmail) {
         if (feedback.getName() == null || feedback.getName().trim().isEmpty()) {
             logger.error("Validation failed: name is empty for email {}", maskedEmail);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name cannot be empty");
