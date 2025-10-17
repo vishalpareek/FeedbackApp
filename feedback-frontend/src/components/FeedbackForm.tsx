@@ -44,7 +44,7 @@ const FeedbackForm: React.FC = () => {
         }
 
         try {
-            const res = await fetch("http://localhost:8080/api/feedback/submit", {
+            const res = await fetch("http://localhost:8080/api/feedback", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),

@@ -1,5 +1,6 @@
 .idea
 node_modules
+*.iml
 
 # macOS system files
 .DS_Store
