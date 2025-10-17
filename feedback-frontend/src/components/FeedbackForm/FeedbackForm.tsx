@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import StatusModal from "./StatusModal/StatusModal";
+import StatusModal from "../StatusModal/StatusModal";
 import "./FeedbackForm.css";
 
 interface FormData {
@@ -151,9 +151,9 @@ const FeedbackForm: React.FC = () => {
             >
                 {modalType === "success" && modalData && (
                     <div className="submitted-data" aria-live="polite">
-                        <p><strong>Id:</strong> {modalData.id}</p>
-                        <p><strong>Name:</strong> {modalData.name}</p>
-                        <p><strong>Message:</strong> {modalData.message}</p>
+                        <p data-testid="modal-id"><strong>Id:</strong> {modalData.id}</p>
+                        <p data-testid="modal-name"><strong>Name:</strong> {modalData.name}</p>
+                        <p data-testid="modal-message"><strong>Message:</strong> {modalData.message}</p>
                     </div>
                 )}
             </StatusModal>
