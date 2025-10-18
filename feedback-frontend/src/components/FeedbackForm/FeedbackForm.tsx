@@ -1,7 +1,7 @@
-import React from "react";
-import StatusModal from "../StatusModal/StatusModal";
-import "./FeedbackForm.css";
-import {useFeedbackForm} from "../../hooks/useFeedbackForm";
+import React from 'react';
+import StatusModal from '../StatusModal/StatusModal';
+import './FeedbackForm.css';
+import { useFeedbackForm } from '../../hooks/useFeedbackForm';
 
 const FeedbackForm: React.FC = () => {
     const {
@@ -38,7 +38,7 @@ const FeedbackForm: React.FC = () => {
                             value={formData.name}
                             onChange={handleChange}
                             aria-invalid={!!errors.name}
-                            aria-describedby={errors.name ? "name-error" : undefined}
+                            aria-describedby={errors.name ? 'name-error' : undefined}
                             required
                         />
                         {errors.name && (
@@ -57,7 +57,7 @@ const FeedbackForm: React.FC = () => {
                             value={formData.email}
                             onChange={handleChange}
                             aria-invalid={!!errors.email}
-                            aria-describedby={errors.email ? "email-error" : undefined}
+                            aria-describedby={errors.email ? 'email-error' : undefined}
                             required
                         />
                         {errors.email && (
@@ -75,7 +75,7 @@ const FeedbackForm: React.FC = () => {
                             value={formData.message}
                             onChange={handleChange}
                             aria-invalid={!!errors.message}
-                            aria-describedby={errors.message ? "message-error" : undefined}
+                            aria-describedby={errors.message ? 'message-error' : undefined}
                             required
                         />
                         {errors.message && (
@@ -85,7 +85,9 @@ const FeedbackForm: React.FC = () => {
                         )}
                     </div>
 
-                    <button type="submit" className="submit-button">Submit</button>
+                    <button type="submit" className="submit-button">
+                        Submit
+                    </button>
                 </form>
             </div>
 
@@ -95,11 +97,17 @@ const FeedbackForm: React.FC = () => {
                 type={modalType}
                 onClose={handleClose}
             >
-                {modalType === "success" && modalData && (
+                {modalType === 'success' && modalData && (
                     <div className="submitted-data" aria-live="polite">
-                        <p data-testid="modal-id"><strong>Id:</strong> {modalData.id}</p>
-                        <p data-testid="modal-name"><strong>Name:</strong> {modalData.name}</p>
-                        <p data-testid="modal-message"><strong>Message:</strong> {modalData.message}</p>
+                        <p data-testid="modal-id">
+                            <strong>Id:</strong> {modalData.id}
+                        </p>
+                        <p data-testid="modal-name">
+                            <strong>Name:</strong> {modalData.name}
+                        </p>
+                        <p data-testid="modal-message">
+                            <strong>Message:</strong> {modalData.message}
+                        </p>
                     </div>
                 )}
             </StatusModal>

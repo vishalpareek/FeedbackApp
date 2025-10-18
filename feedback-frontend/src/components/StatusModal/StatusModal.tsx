@@ -1,10 +1,10 @@
-import React, { useEffect, useRef } from "react";
-import "./StatusModal.css";
+import React, { useEffect, useRef } from 'react';
+import './StatusModal.css';
 
-interface StatusModalProps {
+export interface StatusModalProps {
     show: boolean;
     message: string;
-    type: "success" | "error";
+    type: 'success' | 'error';
     onClose: () => void;
     children?: React.ReactNode;
 }
@@ -21,10 +21,10 @@ const StatusModal: React.FC<StatusModalProps> = ({ show, message, type, onClose,
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === "Escape") onClose();
+            if (e.key === 'Escape') onClose();
         };
-        document.addEventListener("keydown", handleKeyDown);
-        return () => document.removeEventListener("keydown", handleKeyDown);
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
     }, [onClose]);
 
     if (!show) return null;
@@ -39,7 +39,7 @@ const StatusModal: React.FC<StatusModalProps> = ({ show, message, type, onClose,
             ref={modalRef}
         >
             <div className="modal-content" tabIndex={-1}>
-                <h2 id="modal-title">{type === "success" ? "Success" : "Error"}</h2>
+                <h2 id="modal-title">{type === 'success' ? 'Success' : 'Error'}</h2>
                 <p id="modal-desc">{message}</p>
                 {children && <div>{children}</div>}
                 <button
