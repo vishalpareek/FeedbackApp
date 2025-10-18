@@ -7,7 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/feedbacks")
 public class FeedbackController {
 
     private final FeedbackService feedbackService;
@@ -16,7 +16,7 @@ public class FeedbackController {
         this.feedbackService = feedbackService;
     }
 
-    @PostMapping("/feedback")
+    @PostMapping
     public FeedbackResponse submitFeedback(@Valid @RequestBody FeedbackRequest feedbackRequest) {
         return feedbackService.submitFeedback(feedbackRequest);
     }

@@ -35,7 +35,7 @@ class FeedbackControllerTest {
 
         Mockito.when(feedbackService.submitFeedback(any(FeedbackRequest.class))).thenReturn(response);
 
-        mockMvc.perform(post("/api/feedback")
+        mockMvc.perform(post("/api/feedbacks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -52,7 +52,7 @@ class FeedbackControllerTest {
                 .thenThrow(new org.springframework.web.server.ResponseStatusException(
                         org.springframework.http.HttpStatus.BAD_REQUEST, "Name is required"));
 
-        mockMvc.perform(post("/api/feedback")
+        mockMvc.perform(post("/api/feedbacks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())

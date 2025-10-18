@@ -31,7 +31,7 @@ class FeedbackControllerIntegrationTest {
     private FeedbackRepository feedbackRepository;
 
     private String baseUrl() {
-        return "http://localhost:" + port + "/api/feedback";
+        return "http://localhost:" + port + "/api/feedbacks";
     }
 
     @BeforeEach

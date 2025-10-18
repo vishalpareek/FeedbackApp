@@ -8,6 +8,8 @@ A **full-stack feedback submission platform** built with:
 
  **Testing**: Jest + React Testing Library (frontend) and JUnit (backend)
 
+ **E2E Testing** : Cypress
+
  **Linting**: ESLint
 
 The app lets users submit feedback through an accessible form. The backend handles validation and storage, while the frontend displays success/error modals with clear messaging.
@@ -26,7 +28,7 @@ Make sure you have the following installed:
 
 ## Start Development Servers
 
-### **1️⃣ Backend (Spring Boot)**
+### ** Backend (Spring Boot)**
 
 From the project root:
 
@@ -36,10 +38,10 @@ mvn -N wrapper:wrapper
 ```
 Or run from IntelliJ by executing the FeedbackApplication main class.
 
-#### ✅ Backend runs at → http://localhost:8080
+####  Backend runs at → http://localhost:8080
 
 
-### **2️⃣ Frontend (React + TypeScript)**
+### ** Frontend (React + TypeScript)**
 
 In another terminal:
 
@@ -54,7 +56,7 @@ npm start
 
 The frontend connects to the backend API at:
 ```bash
-http://localhost:8080/api/feedback
+http://localhost:8080/api/feedbacks
 ```
 
 ## **Run Tests**
@@ -63,13 +65,18 @@ http://localhost:8080/api/feedback
 cd feedback-frontend
 npm test
 ```
+**Cypress E2E tests**
+```bash
+cd feedback-frontend
+cypress run open
+```
 
 To run lint checks:
 ```bash
 npm run lint
 ```
 
-Backend tests
+### Backend tests
 ```bash
 cd feedback-backend
 mvn test
