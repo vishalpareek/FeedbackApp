@@ -1,6 +1,6 @@
 # Feedback Form — Full Stack App
 
-A **full-stack feedback submission platform** built with:
+A **full-stack feedback submission and retrieval platform** built with:
 
  **Frontend**: React + TypeScript (Create React App)
 
@@ -12,7 +12,7 @@ A **full-stack feedback submission platform** built with:
 
  **Linting**: ESLint
 
-The app lets users submit feedback through an accessible form. The backend handles validation and storage, while the frontend displays success/error modals with clear messaging.
+The app lets users submit and view feedback through an accessible form. The backend handles validation and storage, while the frontend displays success/error modals with clear messaging.
 
 ---
 

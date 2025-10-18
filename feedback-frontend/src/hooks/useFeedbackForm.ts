@@ -10,14 +10,17 @@ export interface ModalData {
     id: number;
     name: string;
     message: string;
+    createdAt: string;
 }
+
+export type ModalType = "success" | "error" | "info";
 
 interface State {
     formData: FormData;
     modalData: ModalData;
     errors: Partial<FormData>;
     showModal: boolean;
-    modalType: "success" | "error";
+    modalType: ModalType;
     modalMessage: string;
 }
 
@@ -31,7 +34,7 @@ type Action =
 
 const initialState: State = {
     formData: { name: "", email: "", message: "" },
-    modalData: { id: 0, name: "", message: "" },
+    modalData: { id: 0, name: "", message: "", createdAt: "" },
     errors: {},
     showModal: false,
     modalType: "success",
@@ -129,7 +132,11 @@ export function useFeedbackForm() {
 
                 if (!res.ok) throw new Error("Network response was not ok");
                 const data: ModalData = await res.json();
-                dispatch({ type: "SUBMIT_SUCCESS", payload: data });
+                const formattedData = {
+                    ...data,
+                    createdAt: new Date(data.createdAt).toISOString(),
+                };
+                dispatch({ type: "SUBMIT_SUCCESS", payload: formattedData });
                 firstFieldRef.current?.focus();
             } catch {
                 dispatch({
