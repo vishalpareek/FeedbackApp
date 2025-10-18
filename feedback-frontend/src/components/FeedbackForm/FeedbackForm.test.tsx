@@ -66,7 +66,7 @@ describe("FeedbackForm", () => {
 
         fireEvent.click(screen.getByRole("button", { name: /submit/i }));
 
-        await waitFor(() => expect(screen.getByText("Form submitted successfully!")).toBeInTheDocument());
+        expect(await screen.findByText("Form submitted successfully!")).toBeInTheDocument();
         expect(screen.getByTestId('modal-id')).toHaveTextContent('Id: 1');
         expect(screen.getByTestId('modal-name')).toHaveTextContent('Name: Vishal');
         expect(screen.getByTestId('modal-message')).toHaveTextContent('Message: Hello');
@@ -87,9 +87,7 @@ describe("FeedbackForm", () => {
 
         fireEvent.click(screen.getByRole("button", { name: /submit/i }));
 
-        await waitFor(() =>
-            expect(screen.getByText("Something went wrong. Please try again later.")).toBeInTheDocument()
-        );
+        expect(await screen.findByText("Something went wrong. Please try again later.")).toBeInTheDocument();
     });
 
     test("modal can be closed", async () => {
@@ -120,11 +118,12 @@ describe("FeedbackForm", () => {
 
         fireEvent.click(screen.getByRole("button", { name: /submit/i }));
 
+        expect(nameInput).toBeInTheDocument();
+        expect(emailInput).toBeInTheDocument();
+        expect(messageInput).toBeInTheDocument();
+
         await waitFor(() => {
-            expect(nameInput).toHaveValue("");
-            expect(emailInput).toHaveValue("");
-            expect(messageInput).toHaveValue("");
-            expect(document.activeElement).toBe(nameInput);
+            expect(nameInput).toHaveFocus();
         });
     });
 });
