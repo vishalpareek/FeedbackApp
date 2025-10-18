@@ -11,10 +11,12 @@ const FeedbackForm: React.FC = () => {
         modalType,
         modalMessage,
         modalData,
+        allFeedbacks,
         firstFieldRef,
         handleChange,
         handleSubmit,
         handleClose,
+        getAllFeedbacks
     } = useFeedbackForm();
 
     return (
@@ -85,8 +87,9 @@ const FeedbackForm: React.FC = () => {
                         )}
                     </div>
 
-                    <button type="submit" className="submit-button">
-                        Submit
+                    <button type="submit" className="submit-button">Submit</button>
+                    <button type="button" className="get-all-feedback-button" onClick={getAllFeedbacks}>
+                        Get All Feedbacks
                     </button>
                 </form>
             </div>
@@ -108,8 +111,37 @@ const FeedbackForm: React.FC = () => {
                         <p data-testid="modal-message">
                             <strong>Message:</strong> {modalData.message}
                         </p>
-                        <p><strong>Created At:</strong> {new Date(modalData.createdAt).toLocaleString()}</p>
+                       <p><strong>Created At:</strong> {modalData.createdAt} </p>
 
+                    </div>
+                )}
+
+                {modalType === "info" && (
+                    <div className="all-feedbacks" aria-live="polite">
+                        {allFeedbacks.length > 0 ? (
+                            <table className="feedback-table">
+                                <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Name</th>
+                                    <th>Message</th>
+                                    <th>Created At</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {allFeedbacks.map((feedback) => (
+                                    <tr key={feedback.id}>
+                                        <td>{feedback.id}</td>
+                                        <td>{feedback.name}</td>
+                                        <td>{feedback.message}</td>
+                                        <td>{feedback.createdAt}</td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </table>
+                        ) : (
+                            <p>No feedback found.</p>
+                        )}
                     </div>
                 )}
             </StatusModal>
