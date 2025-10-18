@@ -63,7 +63,7 @@ function reducer(state: State, action: Action): State {
                 errors: {},
                 showModal: true,
                 modalType: "success",
-                modalMessage: "Form submitted successfully!",
+                modalMessage: "Feedback submitted successfully!",
             };
         case "SUBMIT_ERROR":
             return {
@@ -121,7 +121,7 @@ export function useFeedbackForm() {
             }
 
             try {
-                const res = await fetch("http://localhost:8080/api/feedback", {
+                const res = await fetch("http://localhost:8080/api/feedbacks", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(state.formData),

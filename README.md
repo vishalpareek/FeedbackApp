@@ -54,7 +54,7 @@ npm start
 
 The frontend connects to the backend API at:
 ```bash
-http://localhost:8080/api/feedback
+http://localhost:8080/api/feedbacks
 ```
 
 ## **Run Tests**

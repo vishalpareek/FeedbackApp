@@ -66,7 +66,7 @@ describe("FeedbackForm", () => {
 
         fireEvent.click(screen.getByRole("button", { name: /submit/i }));
 
-        expect(await screen.findByText("Form submitted successfully!")).toBeInTheDocument();
+        expect(await screen.findByText("Feedback submitted successfully!")).toBeInTheDocument();
         expect(screen.getByTestId('modal-id')).toHaveTextContent('Id: 1');
         expect(screen.getByTestId('modal-name')).toHaveTextContent('Name: Vishal');
         expect(screen.getByTestId('modal-message')).toHaveTextContent('Message: Hello');
