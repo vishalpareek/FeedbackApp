@@ -4,7 +4,7 @@ import './StatusModal.css';
 export interface StatusModalProps {
     show: boolean;
     message: string;
-    type: 'success' | 'error';
+    type: "success" | "error" | "info" ;
     onClose: () => void;
     children?: React.ReactNode;
 }
@@ -39,7 +39,7 @@ const StatusModal: React.FC<StatusModalProps> = ({ show, message, type, onClose,
             ref={modalRef}
         >
             <div className="modal-content" tabIndex={-1}>
-                <h2 id="modal-title">{type === 'success' ? 'Success' : 'Error'}</h2>
+                <h2 id="modal-title">{type === "success" ? "Success" : type === "error" ? "Error" : "Info"}</h2>
                 <p id="modal-desc">{message}</p>
                 {children && <div>{children}</div>}
                 <button

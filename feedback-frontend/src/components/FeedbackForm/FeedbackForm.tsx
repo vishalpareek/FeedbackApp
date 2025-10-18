@@ -108,6 +108,8 @@ const FeedbackForm: React.FC = () => {
                         <p data-testid="modal-message">
                             <strong>Message:</strong> {modalData.message}
                         </p>
+                        <p><strong>Created At:</strong> {new Date(modalData.createdAt).toLocaleString()}</p>
+
                     </div>
                 )}
             </StatusModal>
