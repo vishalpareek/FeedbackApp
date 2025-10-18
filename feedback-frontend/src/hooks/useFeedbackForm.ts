@@ -13,7 +13,7 @@ export interface ModalData {
     createdAt: string;
 }
 
-export type ModalType = "success" | "error" | "info";
+export type ModalType = 'success' | 'error' | 'info';
 
 interface State {
     formData: FormData;
@@ -26,21 +26,21 @@ interface State {
 }
 
 type Action =
-    | { type: "UPDATE_FIELD"; field: keyof FormData; value: string }
-    | { type: "SET_ERRORS"; errors: Partial<FormData> }
-    | { type: "VALIDATION_ERROR"; message: string; errors: Partial<FormData> }
-    | { type: "SUBMIT_SUCCESS"; payload: ModalData }
-    | { type: "SUBMIT_ERROR"; message: string }
-    | { type: "FETCH_ALL_SUCCESS"; payload: ModalData[] }
-    | { type: "CLOSE_MODAL" };
+    | { type: 'UPDATE_FIELD'; field: keyof FormData; value: string }
+    | { type: 'SET_ERRORS'; errors: Partial<FormData> }
+    | { type: 'VALIDATION_ERROR'; message: string; errors: Partial<FormData> }
+    | { type: 'SUBMIT_SUCCESS'; payload: ModalData }
+    | { type: 'SUBMIT_ERROR'; message: string }
+    | { type: 'FETCH_ALL_SUCCESS'; payload: ModalData[] }
+    | { type: 'CLOSE_MODAL' };
 
 const initialState: State = {
-    formData: { name: "", email: "", message: "" },
-    modalData: { id: 0, name: "", message: "", createdAt: "" },
+    formData: { name: '', email: '', message: '' },
+    modalData: { id: 0, name: '', message: '', createdAt: '' },
     errors: {},
     showModal: false,
-    modalType: "success",
-    modalMessage: "",
+    modalType: 'success',
+    modalMessage: '',
     allFeedbacks: [],
 };
 
@@ -85,15 +85,15 @@ const reducer = (state: State, action: Action): State => {
                 modalType: 'error',
                 modalMessage: action.message,
             };
-        case "FETCH_ALL_SUCCESS":
+        case 'FETCH_ALL_SUCCESS':
             return {
                 ...state,
                 allFeedbacks: action.payload,
                 showModal: true,
-                modalType: "info",
-                modalMessage: "All Feedbacks",
+                modalType: 'info',
+                modalMessage: 'All Feedbacks',
             };
-        case "CLOSE_MODAL":
+        case 'CLOSE_MODAL':
             return { ...state, showModal: false };
         default:
             return state;
@@ -174,7 +174,7 @@ export function useFeedbackForm() {
                     ...data,
                     createdAt: new Date(data.createdAt).toISOString(),
                 };
-                dispatch({ type: "SUBMIT_SUCCESS", payload: formattedData });
+                dispatch({ type: 'SUBMIT_SUCCESS', payload: formattedData });
                 firstFieldRef.current?.focus();
             } catch {
                 dispatch({
@@ -188,24 +188,23 @@ export function useFeedbackForm() {
 
     const getAllFeedbacks = useCallback(async () => {
         try {
-            const res = await fetch("http://localhost:8080/api/feedbacks");
-            if (!res.ok) throw new Error("Network response was not ok");
+            const res = await fetch('http://localhost:8080/api/feedbacks');
+            if (!res.ok) throw new Error('Network response was not ok');
             const data: ModalData[] = await res.json();
-            const formattedData = data.map(modelData => ({
+            const formattedData = data.map((modelData) => ({
                 ...modelData,
                 createdAt: new Date(modelData.createdAt).toISOString(),
             }));
-            dispatch({ type: "FETCH_ALL_SUCCESS", payload: formattedData });
+            dispatch({ type: 'FETCH_ALL_SUCCESS', payload: formattedData });
         } catch {
             dispatch({
-                type: "SUBMIT_ERROR",
-                message: "Failed to fetch feedbacks. Please try again later.",
+                type: 'SUBMIT_ERROR',
+                message: 'Failed to fetch feedbacks. Please try again later.',
             });
         }
     }, []);
 
-
-    const handleClose = useCallback(() => dispatch({ type: "CLOSE_MODAL" }), []);
+    const handleClose = useCallback(() => dispatch({ type: 'CLOSE_MODAL' }), []);
 
     return {
         ...state,
@@ -213,6 +212,6 @@ export function useFeedbackForm() {
         handleChange,
         handleSubmit,
         handleClose,
-        getAllFeedbacks
+        getAllFeedbacks,
     };
 }

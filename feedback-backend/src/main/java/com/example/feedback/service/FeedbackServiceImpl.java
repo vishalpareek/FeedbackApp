@@ -79,7 +79,7 @@ public class FeedbackServiceImpl implements FeedbackService {
             @Override
     public List<FeedbackResponse> getAllFeedback() {
         return feedbackRepository.findAll().stream()
-                .map(f -> new FeedbackResponse(f.getId(), f.getName(), f.getMessage(), f.getCreatedAt()))
+                .map(feedback -> new FeedbackResponse(feedback.getId(), feedback.getName(), feedback.getMessage(), feedback.getCreatedAt()))
                 .collect(toList());
     }
 

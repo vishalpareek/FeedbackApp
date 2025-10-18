@@ -9,7 +9,7 @@ beforeEach(() => {
     (fetch as jest.Mock).mockClear();
 });
 
-jest.mock("../StatusModal/StatusModal", () => ({ show, message, type, onClose, children }: StatusModalProps) => (
+jest.mock('../StatusModal/StatusModal', () => ({ show, message, type, onClose, children }: StatusModalProps) => (
     <div data-testid="modal">
         {show && (
             <>
@@ -61,10 +61,10 @@ describe('FeedbackForm', () => {
         ).toBeInTheDocument();
     });
 
-    test("submits form successfully and shows modal with createdAt", async () => {
-        const backendDate = "2025-10-18T21:47:30.716282";
+    test('submits form successfully and shows modal with createdAt', async () => {
+        const backendDate = '2025-10-18T21:47:30.716282';
         const isoDate = new Date(backendDate).toISOString();
-        const mockResponse = { id: 1, name: "Vishal", message: "Hello", createdAt: isoDate };
+        const mockResponse = { id: 1, name: 'Vishal', message: 'Hello', createdAt: isoDate };
         global.fetch = jest.fn(() =>
             Promise.resolve({
                 ok: true,
@@ -122,8 +122,13 @@ describe('FeedbackForm', () => {
             screen.queryByText(/Please fix the highlighted errors and try again./)
         ).not.toBeInTheDocument();
     });
-    test("focuses on the first field after successful submission", async () => {
-        const mockResponse = { id: 1, name: "Vishal", message: "Hello", createdAt: "2025-10-18T22:00:00.123456" };
+    test('focuses on the first field after successful submission', async () => {
+        const mockResponse = {
+            id: 1,
+            name: 'Vishal',
+            message: 'Hello',
+            createdAt: '2025-10-18T22:00:00.123456',
+        };
         global.fetch = jest.fn(() =>
             Promise.resolve({
                 ok: true,
@@ -151,12 +156,22 @@ describe('FeedbackForm', () => {
         });
     });
 
-    test("fetches all feedbacks and shows table", async () => {
+    test('fetches all feedbacks and shows table', async () => {
         (fetch as jest.Mock).mockResolvedValueOnce({
             ok: true,
             json: async () => [
-                { id: 1, name: "Vishal Pareek", message: "Nice App", createdAt: "2025-10-18T21:47:30.716282"  },
-                { id: 2, name: "Test User", message: "Good app", createdAt: "2025-10-18T22:00:00.123456"  },
+                {
+                    id: 1,
+                    name: 'Vishal Pareek',
+                    message: 'Nice App',
+                    createdAt: '2025-10-18T21:47:30.716282',
+                },
+                {
+                    id: 2,
+                    name: 'Test User',
+                    message: 'Good app',
+                    createdAt: '2025-10-18T22:00:00.123456',
+                },
             ],
         });
 
@@ -167,6 +182,6 @@ describe('FeedbackForm', () => {
         expect(await screen.findByText(/all feedbacks/i)).toBeInTheDocument();
         expect(await screen.findByText(/vishal pareek/i)).toBeInTheDocument();
         expect(await screen.findByText(/test user/i)).toBeInTheDocument();
-        expect(screen.getAllByRole("row")).toHaveLength(3); // 2 data rows + header
+        expect(screen.getAllByRole('row')).toHaveLength(3); // 2 data rows + header
     });
 });
