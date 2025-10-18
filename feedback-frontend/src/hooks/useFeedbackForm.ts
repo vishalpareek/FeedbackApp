@@ -22,6 +22,7 @@ interface State {
     showModal: boolean;
     modalType: ModalType;
     modalMessage: string;
+    allFeedbacks: ModalData[];
 }
 
 type Action =
@@ -30,6 +31,7 @@ type Action =
     | { type: "VALIDATION_ERROR"; message: string; errors: Partial<FormData> }
     | { type: "SUBMIT_SUCCESS"; payload: ModalData }
     | { type: "SUBMIT_ERROR"; message: string }
+    | { type: "FETCH_ALL_SUCCESS"; payload: ModalData[] }
     | { type: "CLOSE_MODAL" };
 
 const initialState: State = {
@@ -39,6 +41,7 @@ const initialState: State = {
     showModal: false,
     modalType: "success",
     modalMessage: "",
+    allFeedbacks: [],
 };
 
 function reducer(state: State, action: Action): State {
@@ -74,6 +77,14 @@ function reducer(state: State, action: Action): State {
                 showModal: true,
                 modalType: "error",
                 modalMessage: action.message,
+            };
+        case "FETCH_ALL_SUCCESS":
+            return {
+                ...state,
+                allFeedbacks: action.payload,
+                showModal: true,
+                modalType: "info",
+                modalMessage: "All Feedbacks",
             };
         case "CLOSE_MODAL":
             return { ...state, showModal: false };
@@ -148,6 +159,25 @@ export function useFeedbackForm() {
         [validate, state.formData]
     );
 
+    const getAllFeedbacks = useCallback(async () => {
+        try {
+            const res = await fetch("http://localhost:8080/api/feedbacks");
+            if (!res.ok) throw new Error("Network response was not ok");
+            const data: ModalData[] = await res.json();
+            const formattedData = data.map(modelData => ({
+                ...modelData,
+                createdAt: new Date(modelData.createdAt).toISOString(),
+            }));
+            dispatch({ type: "FETCH_ALL_SUCCESS", payload: formattedData });
+        } catch {
+            dispatch({
+                type: "SUBMIT_ERROR",
+                message: "Failed to fetch feedbacks. Please try again later.",
+            });
+        }
+    }, []);
+
+
     const handleClose = useCallback(() => dispatch({ type: "CLOSE_MODAL" }), []);
 
     return {
@@ -156,5 +186,6 @@ export function useFeedbackForm() {
         handleChange,
         handleSubmit,
         handleClose,
+        getAllFeedbacks
     };
 }
