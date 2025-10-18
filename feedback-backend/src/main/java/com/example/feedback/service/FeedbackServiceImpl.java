@@ -39,6 +39,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         feedback.setName(feedbackRequest.getName());
         feedback.setEmail(feedbackRequest.getEmail());
         feedback.setMessage(feedbackRequest.getMessage());
+        feedback.setCreatedAt(now());
 
         Feedback savedFeedback = feedbackRepository.save(feedback);
         logger.info("Feedback saved successfully for user: {}", savedFeedback.getName());
@@ -48,7 +49,8 @@ public class FeedbackServiceImpl implements FeedbackService {
         return new FeedbackResponse(
                 savedFeedback.getId(),
                 savedFeedback.getName(),
-                savedFeedback.getMessage()
+                savedFeedback.getMessage(),
+                savedFeedback.getCreatedAt()
         );
     }
 

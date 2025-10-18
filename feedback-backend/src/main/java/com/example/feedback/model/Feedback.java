@@ -5,6 +5,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+import java.time.LocalDateTime;
+
 @Entity
 public class Feedback {
     @Id
@@ -15,6 +17,8 @@ public class Feedback {
     private String email;
 
     private String message;
+
+    private LocalDateTime createdAt;
 
     public Feedback() {
     }
@@ -55,4 +59,8 @@ public class Feedback {
     public void setMessage(String message) {
         this.message = message;
     }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

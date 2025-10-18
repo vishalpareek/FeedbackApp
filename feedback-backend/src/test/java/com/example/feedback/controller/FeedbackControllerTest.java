@@ -86,4 +86,36 @@ class FeedbackControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("Invalid email format"));
     }
+
+    @Test
+    void testGetAllFeedbacks_returnsOkAndList() throws Exception {
+        FeedbackResponse f1 = new FeedbackResponse(1L, "Vishal", "Great app!", LocalDateTime.of(2025, 10, 18, 20, 0));
+        FeedbackResponse f2 = new FeedbackResponse(2L, "Nishant", "Nice work!", LocalDateTime.of(2025, 10, 18, 21, 0));
+
+        when(feedbackService.getAllFeedback()).thenReturn(Arrays.asList(f1, f2));
+
+        mockMvc.perform(get("/api/feedbacks")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].name").value("Vishal"))
+                .andExpect(jsonPath("$[1].name").value("Nishant"));
+    }
+
+    @Test
+    void testGetAllFeedbacks_returnsCreatedAt() throws Exception {
+        FeedbackResponse f1 = new FeedbackResponse(1L, "Vishal", "Great app!",
+                LocalDateTime.of(2025, 10, 18, 20, 0));
+        FeedbackResponse f2 = new FeedbackResponse(2L, "Nishant", "Nice work!",
+                LocalDateTime.of(2025, 10, 18, 21, 0));
+
+        when(feedbackService.getAllFeedback()).thenReturn(Arrays.asList(f1, f2));
+
+        mockMvc.perform(get("/api/feedbacks")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].createdAt").value("2025-10-18T20:00:00"))
+                .andExpect(jsonPath("$[1].createdAt").value("2025-10-18T21:00:00"));
+    }
 }
