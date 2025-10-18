@@ -4,7 +4,6 @@ import com.example.feedback.dto.FeedbackRequest;
 import com.example.feedback.dto.FeedbackResponse;
 import com.example.feedback.service.FeedbackService;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -12,6 +11,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -31,9 +35,9 @@ class FeedbackControllerTest {
     @Test
     void submitFeedback_shouldReturnSuccess() throws Exception {
         FeedbackRequest request = new FeedbackRequest("Vishal", "Great app!", "vishal@example.com");
-        FeedbackResponse response = new FeedbackResponse(1L, "Vishal", "Great app!");
+        FeedbackResponse response = new FeedbackResponse(1L, "Vishal", "Great app!", LocalDateTime.of(2025, 10, 18, 21, 0));
 
-        Mockito.when(feedbackService.submitFeedback(any(FeedbackRequest.class))).thenReturn(response);
+        when(feedbackService.submitFeedback(any(FeedbackRequest.class))).thenReturn(response);
 
         mockMvc.perform(post("/api/feedbacks")
                         .contentType(MediaType.APPLICATION_JSON)

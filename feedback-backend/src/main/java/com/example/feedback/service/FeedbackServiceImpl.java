@@ -11,6 +11,11 @@ import org.springframework.web.server.ResponseStatusException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
+import static java.time.LocalDateTime.now;
+import static java.util.stream.Collectors.toList;
+
 @Service
 public class FeedbackServiceImpl implements FeedbackService {
 
@@ -70,6 +75,12 @@ public class FeedbackServiceImpl implements FeedbackService {
             logger.error("Validation failed: Invalid name {}  for email {}", feedback.getName(), maskedEmail);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name cannot be empty");
         }
+    }
+            @Override
+    public List<FeedbackResponse> getAllFeedback() {
+        return feedbackRepository.findAll().stream()
+                .map(f -> new FeedbackResponse(f.getId(), f.getName(), f.getMessage(), f.getCreatedAt()))
+                .collect(toList());
     }
 
     /**

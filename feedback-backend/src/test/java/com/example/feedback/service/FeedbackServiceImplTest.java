@@ -9,8 +9,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -70,6 +76,10 @@ public class FeedbackServiceImplTest {
         verify(feedbackRepository, times(1)).save(any(Feedback.class));
     }
 
+    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name cannot be empty");
+}
+    }
+
     @Test
     public void testMaskEmail_shortEmail() {
         assertEquals("**@test.fi", feedbackService.maskEmail("vp@test.fi"));
@@ -91,5 +101,56 @@ public class FeedbackServiceImplTest {
     public void testValidateFeedback_ValidName() {
         FeedbackRequest request = new FeedbackRequest("Vishal Pareek", "Message", "vishal@example.com");
         assertDoesNotThrow(() -> feedbackService.validateFeedback(request, "vi***@example.com"));
+    }
+
+    @Test
+    void testGetAllFeedback_returnsFeedbackList() {
+        Feedback f1 = new Feedback();
+        f1.setId(1L);
+        f1.setName("Vishal");
+        f1.setMessage("Great app!");
+        f1.setEmail("vishal@example.com");
+        f1.setCreatedAt(LocalDateTime.of(2025, 10, 18, 20, 0));
+
+        Feedback f2 = new Feedback();
+        f2.setId(2L);
+        f2.setName("Nishant");
+        f2.setMessage("Nice work!");
+        f2.setEmail("nishant@example.com");
+        f2.setCreatedAt(LocalDateTime.of(2025, 10, 18, 21, 0));
+
+        when(feedbackRepository.findAll()).thenReturn(asList(f1, f2));
+
+        List<FeedbackResponse> result = feedbackService.getAllFeedback();
+
+        assertEquals(2, result.size());
+        assertEquals("Vishal", result.get(0).getName());
+        assertEquals("Nishant", result.get(1).getName());
+
+        // extra check for created at
+        assertEquals(f1.getCreatedAt(), result.get(0).getCreatedAt());
+        assertEquals(f2.getCreatedAt(), result.get(1).getCreatedAt());
+
+        verify(feedbackRepository, times(1)).findAll();
+    }
+
+    @Test
+    void testGetAllFeedback_returnsEmptyList() {
+        when(feedbackRepository.findAll()).thenReturn(emptyList());
+
+        List<FeedbackResponse> result = feedbackService.getAllFeedback();
+        assertTrue(result.isEmpty());
+        verify(feedbackRepository, times(1)).findAll();
+    }
+
+    @Test
+    void testGetAllFeedback_repositoryThrowsException() {
+        when(feedbackRepository.findAll()).thenThrow(new RuntimeException("DB down"));
+
+        RuntimeException ex = assertThrows(RuntimeException.class,
+                () -> feedbackService.getAllFeedback());
+        assertEquals("DB down", ex.getMessage());
+
+        verify(feedbackRepository, times(1)).findAll();
     }
 }

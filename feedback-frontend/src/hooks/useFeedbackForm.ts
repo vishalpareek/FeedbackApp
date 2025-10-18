@@ -22,23 +22,26 @@ interface State {
     showModal: boolean;
     modalType: ModalType;
     modalMessage: string;
+    allFeedbacks: ModalData[];
 }
 
 type Action =
-    | { type: 'UPDATE_FIELD'; field: keyof FormData; value: string }
-    | { type: 'SET_ERRORS'; errors: Partial<FormData> }
-    | { type: 'VALIDATION_ERROR'; message: string; errors: Partial<FormData> }
-    | { type: 'SUBMIT_SUCCESS'; payload: ModalData }
-    | { type: 'SUBMIT_ERROR'; message: string }
-    | { type: 'CLOSE_MODAL' };
+    | { type: "UPDATE_FIELD"; field: keyof FormData; value: string }
+    | { type: "SET_ERRORS"; errors: Partial<FormData> }
+    | { type: "VALIDATION_ERROR"; message: string; errors: Partial<FormData> }
+    | { type: "SUBMIT_SUCCESS"; payload: ModalData }
+    | { type: "SUBMIT_ERROR"; message: string }
+    | { type: "FETCH_ALL_SUCCESS"; payload: ModalData[] }
+    | { type: "CLOSE_MODAL" };
 
 const initialState: State = {
     formData: { name: "", email: "", message: "" },
     modalData: { id: 0, name: "", message: "", createdAt: "" },
     errors: {},
     showModal: false,
-    modalType: 'success',
-    modalMessage: '',
+    modalType: "success",
+    modalMessage: "",
+    allFeedbacks: [],
 };
 
 /**
@@ -82,7 +85,15 @@ const reducer = (state: State, action: Action): State => {
                 modalType: 'error',
                 modalMessage: action.message,
             };
-        case 'CLOSE_MODAL':
+        case "FETCH_ALL_SUCCESS":
+            return {
+                ...state,
+                allFeedbacks: action.payload,
+                showModal: true,
+                modalType: "info",
+                modalMessage: "All Feedbacks",
+            };
+        case "CLOSE_MODAL":
             return { ...state, showModal: false };
         default:
             return state;
@@ -175,7 +186,26 @@ export function useFeedbackForm() {
         [validate, state.formData]
     );
 
-    const handleClose = useCallback(() => dispatch({ type: 'CLOSE_MODAL' }), []);
+    const getAllFeedbacks = useCallback(async () => {
+        try {
+            const res = await fetch("http://localhost:8080/api/feedbacks");
+            if (!res.ok) throw new Error("Network response was not ok");
+            const data: ModalData[] = await res.json();
+            const formattedData = data.map(modelData => ({
+                ...modelData,
+                createdAt: new Date(modelData.createdAt).toISOString(),
+            }));
+            dispatch({ type: "FETCH_ALL_SUCCESS", payload: formattedData });
+        } catch {
+            dispatch({
+                type: "SUBMIT_ERROR",
+                message: "Failed to fetch feedbacks. Please try again later.",
+            });
+        }
+    }, []);
+
+
+    const handleClose = useCallback(() => dispatch({ type: "CLOSE_MODAL" }), []);
 
     return {
         ...state,
@@ -183,5 +213,6 @@ export function useFeedbackForm() {
         handleChange,
         handleSubmit,
         handleClose,
+        getAllFeedbacks
     };
 }

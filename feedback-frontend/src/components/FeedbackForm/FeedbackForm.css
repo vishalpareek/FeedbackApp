@@ -62,6 +62,12 @@ button {
     transition: background 0.3s;
 }
 
+button.get-all-feedback-button {
+    background: #a5c3ee;
+    margin-top: 10px;
+    color: black;
+}
+
 button:hover {
     background: #0056b3;
 }
@@ -88,3 +94,26 @@ button:disabled {
         padding: 1.5rem;
     }
 }
+
+.feedback-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.feedback-table th,
+.feedback-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+
+.feedback-table th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+}
+
+.feedback-table tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
