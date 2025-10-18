@@ -10,6 +10,11 @@ import org.springframework.web.server.ResponseStatusException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
+import static java.time.LocalDateTime.now;
+import static java.util.stream.Collectors.toList;
+
 @Service
 public class FeedbackServiceImpl implements FeedbackService {
 
@@ -31,6 +36,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         feedback.setName(feedbackRequest.getName());
         feedback.setEmail(feedbackRequest.getEmail());
         feedback.setMessage(feedbackRequest.getMessage());
+        feedback.setCreatedAt(now());
 
         try {
             Feedback savedFeedback = feedbackRepository.save(feedback);
@@ -41,12 +47,20 @@ public class FeedbackServiceImpl implements FeedbackService {
             return new FeedbackResponse(
                     savedFeedback.getId(),
                     savedFeedback.getName(),
-                    savedFeedback.getMessage()
+                    savedFeedback.getMessage(),
+                    savedFeedback.getCreatedAt()
             );
         } catch (Exception e) {
             logger.error("Error saving feedback: {}", e.getMessage(), e);
             throw e;
         }
+    }
+
+    @Override
+    public List<FeedbackResponse> getAllFeedback() {
+        return feedbackRepository.findAll().stream()
+                .map(f -> new FeedbackResponse(f.getId(), f.getName(), f.getMessage(), f.getCreatedAt()))
+                .collect(toList());
     }
 
     private void validateFeedback(FeedbackRequest feedback, String maskedEmail) {

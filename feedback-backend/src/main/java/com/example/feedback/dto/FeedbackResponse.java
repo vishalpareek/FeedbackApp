@@ -1,14 +1,18 @@
 package com.example.feedback.dto;
 
-public class FeedbackResponse {
-    private Long id;
-    private String name;
-    private String message;
+import java.time.LocalDateTime;
 
-    public FeedbackResponse(Long id, String name, String message) {
+public class FeedbackResponse {
+    private final Long id;
+    private final String name;
+    private final String message;
+    private final LocalDateTime createdAt;
+
+    public FeedbackResponse(Long id, String name, String message, LocalDateTime createdAt) {
         this.id = id;
         this.name = name;
         this.message = message;
+        this.createdAt = createdAt;
     }
 
     public Long getId() {
@@ -22,4 +26,6 @@ public class FeedbackResponse {
     public String getMessage() {
         return message;
     }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
 }
