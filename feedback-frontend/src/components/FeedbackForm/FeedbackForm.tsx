@@ -16,7 +16,7 @@ const FeedbackForm: React.FC = () => {
         handleChange,
         handleSubmit,
         handleClose,
-        getAllFeedbacks
+        getAllFeedbacks,
     } = useFeedbackForm();
 
     return (
@@ -87,8 +87,14 @@ const FeedbackForm: React.FC = () => {
                         )}
                     </div>
 
-                    <button type="submit" className="submit-button">Submit</button>
-                    <button type="button" className="get-all-feedback-button" onClick={getAllFeedbacks}>
+                    <button type="submit" className="submit-button">
+                        Submit
+                    </button>
+                    <button
+                        type="button"
+                        className="get-all-feedback-button"
+                        onClick={getAllFeedbacks}
+                    >
                         Get All Feedbacks
                     </button>
                 </form>
@@ -111,32 +117,33 @@ const FeedbackForm: React.FC = () => {
                         <p data-testid="modal-message">
                             <strong>Message:</strong> {modalData.message}
                         </p>
-                       <p><strong>Created At:</strong> {modalData.createdAt} </p>
-
+                        <p>
+                            <strong>Created At:</strong> {modalData.createdAt}{' '}
+                        </p>
                     </div>
                 )}
 
-                {modalType === "info" && (
+                {modalType === 'info' && (
                     <div className="all-feedbacks" aria-live="polite">
                         {allFeedbacks.length > 0 ? (
                             <table className="feedback-table">
                                 <thead>
-                                <tr>
-                                    <th>Id</th>
-                                    <th>Name</th>
-                                    <th>Message</th>
-                                    <th>Created At</th>
-                                </tr>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Name</th>
+                                        <th>Message</th>
+                                        <th>Created At</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                {allFeedbacks.map((feedback) => (
-                                    <tr key={feedback.id}>
-                                        <td>{feedback.id}</td>
-                                        <td>{feedback.name}</td>
-                                        <td>{feedback.message}</td>
-                                        <td>{feedback.createdAt}</td>
-                                    </tr>
-                                ))}
+                                    {allFeedbacks.map((feedback) => (
+                                        <tr key={feedback.id}>
+                                            <td>{feedback.id}</td>
+                                            <td>{feedback.name}</td>
+                                            <td>{feedback.message}</td>
+                                            <td>{feedback.createdAt}</td>
+                                        </tr>
+                                    ))}
                                 </tbody>
                             </table>
                         ) : (
