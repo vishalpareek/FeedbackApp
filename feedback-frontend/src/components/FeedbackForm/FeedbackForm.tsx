@@ -1,75 +1,21 @@
-import React, { useState, useRef } from "react";
+import React from "react";
 import StatusModal from "../StatusModal/StatusModal";
 import "./FeedbackForm.css";
-
-interface FormData {
-    name: string;
-    email: string;
-    message: string;
-}
-
-interface ModalData {
-    id: number
-    name: string;
-    message: string;
-}
+import {useFeedbackForm} from "../../hooks/useFeedbackForm";
 
 const FeedbackForm: React.FC = () => {
-    const [formData, setFormData] = useState<FormData>({ name: "", email: "", message: "" });
-    const [modalData, setModalData] = useState<ModalData>({ id: 0, name: "",  message: "" });
-    const [errors, setErrors] = useState<Partial<FormData>>({});
-    const [showModal, setShowModal] = useState(false);
-    const [modalType, setModalType] = useState<"success" | "error">("success");
-    const [modalMessage, setModalMessage] = useState("");
-    const firstFieldRef = useRef<HTMLInputElement>(null);
-
-    const validate = () => {
-        const newErrors: Partial<FormData> = {};
-        if (!formData.name.trim()) newErrors.name = "Name is required.";
-        if (!formData.email.trim()) newErrors.email = "Email is required.";
-        else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Email is invalid.";
-        if (!formData.message.trim()) newErrors.message = "Message is required.";
-        return newErrors;
-    };
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        const validationErrors = validate();
-        if (Object.keys(validationErrors).length > 0) {
-            setErrors(validationErrors);
-            setModalType("error");
-            setModalMessage("Please fix the highlighted errors and try again.");
-            setShowModal(true);
-            return;
-        }
-
-        try {
-            const res = await fetch("http://localhost:8080/api/feedback", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData),
-            });
-
-            if (!res.ok) throw new Error("Network response was not ok");
-            const responseData: ModalData = await res.json();
-
-            setModalType("success");
-            setModalMessage("Form submitted successfully!");
-            setShowModal(true);
-            setFormData({ name: "", email: "", message: "" });
-            setModalData(responseData)
-            setErrors({});
-            firstFieldRef.current?.focus(); // refocus on first field for accessibility
-        } catch (error) {
-            setModalType("error");
-            setModalMessage("Something went wrong. Please try again later.");
-            setShowModal(true);
-        }
-    };
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
+    const {
+        formData,
+        errors,
+        showModal,
+        modalType,
+        modalMessage,
+        modalData,
+        firstFieldRef,
+        handleChange,
+        handleSubmit,
+        handleClose,
+    } = useFeedbackForm();
 
     return (
         <>
@@ -147,7 +93,7 @@ const FeedbackForm: React.FC = () => {
                 show={showModal}
                 message={modalMessage}
                 type={modalType}
-                onClose={() => setShowModal(false)}
+                onClose={handleClose}
             >
                 {modalType === "success" && modalData && (
                     <div className="submitted-data" aria-live="polite">
