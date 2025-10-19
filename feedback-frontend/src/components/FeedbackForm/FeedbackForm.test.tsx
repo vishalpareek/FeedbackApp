@@ -1,19 +1,23 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import FeedbackForm from './FeedbackForm';
-import {StatusModalProps} from "../StatusModal/StatusModal";
+import { StatusModalProps } from '../StatusModal/StatusModal';
 
-jest.mock('../StatusModal/StatusModal', () => ({ show, message, type, onClose, children }: StatusModalProps) => (
-    <div data-testid="modal">
-        {show && (
-            <>
-                <p>{message}</p>
-                <div>{children}</div>
-                <button onClick={onClose}>Close</button>
-            </>
-        )}
-    </div>
-));
+jest.mock(
+    '../StatusModal/StatusModal',
+    () =>
+        ({ show, message, type, onClose, children }: StatusModalProps) => (
+            <div data-testid="modal">
+                {show && (
+                    <>
+                        <p>{message}</p>
+                        <div>{children}</div>
+                        <button onClick={onClose}>Close</button>
+                    </>
+                )}
+            </div>
+        )
+);
 
 describe('FeedbackForm', () => {
     beforeEach(() => {
