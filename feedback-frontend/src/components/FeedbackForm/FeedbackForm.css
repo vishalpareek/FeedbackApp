@@ -99,18 +99,22 @@ button:disabled {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
+    overflow-x: auto;
 }
 
 .feedback-table th,
 .feedback-table td {
     border: 1px solid #ccc;
-    padding: 8px;
+    padding: 0.5rem;
     text-align: left;
 }
 
 .feedback-table th {
     background-color: #f0f0f0;
     font-weight: bold;
+    position: sticky;
+    top:0;
+    z-index: 1;
 }
 
 .feedback-table tr:nth-child(even) {
