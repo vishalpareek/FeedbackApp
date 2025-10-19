@@ -9,17 +9,21 @@ beforeEach(() => {
     (fetch as jest.Mock).mockClear();
 });
 
-jest.mock('../StatusModal/StatusModal', () => ({ show, message, type, onClose, children }: StatusModalProps) => (
-    <div data-testid="modal">
-        {show && (
-            <>
-                <p>{message}</p>
-                <div>{children}</div>
-                <button onClick={onClose}>Close</button>
-            </>
-        )}
-    </div>
-));
+jest.mock(
+    '../StatusModal/StatusModal',
+    () =>
+        ({ show, message, type, onClose, children }: StatusModalProps) => (
+            <div data-testid="modal">
+                {show && (
+                    <>
+                        <p>{message}</p>
+                        <div>{children}</div>
+                        <button onClick={onClose}>Close</button>
+                    </>
+                )}
+            </div>
+        )
+);
 
 describe('FeedbackForm', () => {
     beforeEach(() => {
