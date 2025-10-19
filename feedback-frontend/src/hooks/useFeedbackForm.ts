@@ -38,7 +38,14 @@ const initialState: State = {
     modalMessage: '',
 };
 
-function reducer(state: State, action: Action): State {
+/**
+ * Reducer function to handle all form-related state transitions.
+ *
+ * @param state - The current state of the form
+ * @param action - The dispatched action that determines how to update the state
+ * @returns The updated state after applying the action
+ */
+const reducer = (state: State, action: Action): State => {
     switch (action.type) {
         case 'UPDATE_FIELD':
             return {
@@ -79,6 +86,17 @@ function reducer(state: State, action: Action): State {
     }
 }
 
+/**
+ * Custom React hook that manages the full lifecycle of a feedback form.
+ *
+ * It encapsulates:
+ * - Input state management (via reducer)
+ * - Field validation
+ * - Submission logic (with async fetch to backend)
+ * - Modal visibility and messaging
+ * - Focus handling for accessibility
+ *
+ */
 export function useFeedbackForm() {
     const [state, dispatch] = useReducer(reducer, initialState);
     const firstFieldRef = useRef<HTMLInputElement>(null);
@@ -106,6 +124,15 @@ export function useFeedbackForm() {
         []
     );
 
+    /**
+     * Handles form submission.
+     * <p>
+     * Performs validation, sends a POST request to the backend API, and
+     * dispatches actions based on success or failure.
+     * </p>
+     *
+     * @param e - The form submit event
+     */
     const handleSubmit = useCallback(
         async (e: React.FormEvent) => {
             e.preventDefault();

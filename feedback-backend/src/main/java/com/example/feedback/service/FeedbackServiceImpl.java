@@ -21,6 +21,13 @@ public class FeedbackServiceImpl implements FeedbackService {
         this.feedbackRepository = feedbackRepository;
     }
 
+    /**
+     * Submits a new feedback entry after validation and persists it to the database.
+     *
+     * @param feedbackRequest the feedback request containing user input (name, email, message)
+     * @return a {@link FeedbackResponse} containing the persisted feedback details
+     * @throws ResponseStatusException if validation fails (e.g., invalid name)
+     */
     @Override
     public FeedbackResponse submitFeedback(FeedbackRequest feedbackRequest) {
         String maskedEmail = maskEmail(feedbackRequest.getEmail());
@@ -45,16 +52,37 @@ public class FeedbackServiceImpl implements FeedbackService {
         );
     }
 
+    /**
+     * Validates the provided feedback request.
+     * <p>
+     * Checks that the name field is non-empty and contains only letters and spaces.
+     * Additional validation logic can be added here as per business requirements.
+     *
+     * @param feedback    the feedback request to validate
+     * @param maskedEmail the masked email used for logging to avoid exposing sensitive data
+     * @throws ResponseStatusException if validation fails (e.g., name is empty or invalid)
+     */
     @VisibleForTesting
     void validateFeedback(FeedbackRequest feedback, String maskedEmail) {
-
-        // Sample validations. as per business logic this method may contain different validations
         if (!feedback.getName().matches("[A-Za-z ]+")) {
             logger.error("Validation failed: Invalid name {}  for email {}", feedback.getName(), maskedEmail);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name cannot be empty");
         }
     }
 
+    /**
+     * Masks a user's email address for secure logging.
+     * <p>
+     * For example:
+     * <pre>
+     *     Input:  john.doe@example.com
+     *     Output: jo***@example.com
+     * </pre>
+     * If the email is null or invalid, returns {@code "N/A"}.
+     *
+     * @param email the email address to mask
+     * @return the masked email, or "N/A" if the input is null or invalid
+     */
     @VisibleForTesting
     String maskEmail(String email) {
         if (email == null || !email.contains("@")) return "N/A";
