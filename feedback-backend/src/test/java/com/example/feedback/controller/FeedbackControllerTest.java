@@ -58,7 +58,7 @@ class FeedbackControllerTest {
     void submitFeedback_shouldReturnBadRequest_whenMessageEmpty() throws Exception {
         FeedbackRequest request = new FeedbackRequest("Vishal", "", "user@example.com");
 
-        mockMvc.perform(post("/api/feedback")
+        mockMvc.perform(post("/api/feedbacks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
@@ -80,7 +80,7 @@ class FeedbackControllerTest {
     void submitFeedback_shouldReturnBadRequest_whenEmailInvalid() throws Exception {
         FeedbackRequest request = new FeedbackRequest("Vishal", "Some message", "INVALID_EMAIL");
 
-        mockMvc.perform(post("/api/feedback")
+        mockMvc.perform(post("/api/feedbacks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
