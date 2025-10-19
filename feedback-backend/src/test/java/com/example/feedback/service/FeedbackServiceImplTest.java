@@ -9,7 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
@@ -38,6 +37,7 @@ public class FeedbackServiceImplTest {
         savedFeedback.setName(request.getName());
         savedFeedback.setEmail(request.getEmail());
         savedFeedback.setMessage(request.getMessage());
+        savedFeedback.setCreatedAt(LocalDateTime.of(2025, 10, 18, 21, 0));
 
         when(feedbackRepository.save(any(Feedback.class))).thenReturn(savedFeedback);
 
@@ -47,6 +47,7 @@ public class FeedbackServiceImplTest {
         assertEquals(1L, response.getId());
         assertEquals("Vishal", response.getName());
         assertEquals("Great app!", response.getMessage());
+        assertEquals(LocalDateTime.of(2025, 10, 18, 21, 0), response.getCreatedAt());
 
         verify(feedbackRepository, times(1)).save(any(Feedback.class));
     }
@@ -74,10 +75,6 @@ public class FeedbackServiceImplTest {
 
         assertEquals("DB error", exception.getMessage());
         verify(feedbackRepository, times(1)).save(any(Feedback.class));
-    }
-
-    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name cannot be empty");
-}
     }
 
     @Test
