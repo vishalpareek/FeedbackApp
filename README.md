@@ -63,12 +63,12 @@ http://localhost:8080/api/feedbacks
 ### Frontend tests
 ```bash
 cd feedback-frontend
-npm test
+npm run test
 ```
 **Cypress E2E tests**
 ```bash
 cd feedback-frontend
-cypress run open
+npm run test:e2e
 ```
 
 To run lint checks:
@@ -84,10 +84,11 @@ mvn test
 
 ## Summary
 
-| Part | Tech | Port | Command |
-|------|------|------|----------|
-| **Frontend** | React + TypeScript | 3000 | `npm start` |
-| **Backend** | Spring Boot | 8080 | `mvn spring-boot:run` or `./mvnw spring-boot:run` |
-| **Tests** | Jest / JUnit | — | `npm test` / `mvn test` |
+| Part          | Tech               | Port | Command                                          |
+|---------------|--------------------|------|--------------------------------------------------|
+| **Frontend**  | React + TypeScript | 3000 | `npm start`                                      |
+| **Backend**   | Spring Boot        | 8080 | `mvn spring-boot:run` or `./mvnw spring-boot:run` |
+| **Tests**     | Jest / JUnit       | — | `npm run test` / `mvn test`                      |
+| **E2E Tests** | Cypress            | — | `npm run test:e2e`                   |
 
 
