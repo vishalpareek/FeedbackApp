@@ -32,4 +32,14 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(body, ex.getStatusCode());
     }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<Map<String, Object>> handleRuntimeException(RuntimeException ex) {
+        Map<String, Object> body = Map.of(
+                "status", 500,
+                "error", "Internal Service Error",
+                "message", ex.getMessage()
+        );
+        return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
