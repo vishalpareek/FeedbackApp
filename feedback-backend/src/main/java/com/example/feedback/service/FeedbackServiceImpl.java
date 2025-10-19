@@ -11,6 +11,11 @@ import org.springframework.web.server.ResponseStatusException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
+import static java.time.LocalDateTime.now;
+import static java.util.stream.Collectors.toList;
+
 @Service
 public class FeedbackServiceImpl implements FeedbackService {
 
@@ -39,6 +44,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         feedback.setName(feedbackRequest.getName());
         feedback.setEmail(feedbackRequest.getEmail());
         feedback.setMessage(feedbackRequest.getMessage());
+        feedback.setCreatedAt(now());
 
         Feedback savedFeedback = feedbackRepository.save(feedback);
         logger.info("Feedback saved successfully for user: {}", savedFeedback.getName());
@@ -48,7 +54,8 @@ public class FeedbackServiceImpl implements FeedbackService {
         return new FeedbackResponse(
                 savedFeedback.getId(),
                 savedFeedback.getName(),
-                savedFeedback.getMessage()
+                savedFeedback.getMessage(),
+                savedFeedback.getCreatedAt()
         );
     }
 
@@ -68,6 +75,23 @@ public class FeedbackServiceImpl implements FeedbackService {
             logger.error("Validation failed: Invalid name {}  for email {}", feedback.getName(), maskedEmail);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name cannot be empty");
         }
+    }
+
+    /**
+     * Retrieves all feedback entries from the database.
+     * <p>
+     * This method fetches all {@link com.example.feedback.model.Feedback} entities,
+     * transforms them into {@link com.example.feedback.dto.FeedbackResponse} DTOs,
+     * and returns the resulting list.
+     * </p>
+     *
+     * @return a {@link List} of {@link FeedbackResponse} objects representing all stored feedbacks
+     */
+    @Override
+    public List<FeedbackResponse> getAllFeedback() {
+        return feedbackRepository.findAll().stream()
+                .map(feedback -> new FeedbackResponse(feedback.getId(), feedback.getName(), feedback.getMessage(), feedback.getCreatedAt()))
+                .collect(toList());
     }
 
     /**

@@ -10,15 +10,19 @@ export interface ModalData {
     id: number;
     name: string;
     message: string;
+    createdAt: string;
 }
+
+export type ModalType = 'success' | 'error' | 'info';
 
 interface State {
     formData: FormData;
     modalData: ModalData;
     errors: Partial<FormData>;
     showModal: boolean;
-    modalType: 'success' | 'error';
+    modalType: ModalType;
     modalMessage: string;
+    allFeedbacks: ModalData[];
 }
 
 type Action =
@@ -27,15 +31,17 @@ type Action =
     | { type: 'VALIDATION_ERROR'; message: string; errors: Partial<FormData> }
     | { type: 'SUBMIT_SUCCESS'; payload: ModalData }
     | { type: 'SUBMIT_ERROR'; message: string }
+    | { type: 'FETCH_ALL_SUCCESS'; payload: ModalData[] }
     | { type: 'CLOSE_MODAL' };
 
 const initialState: State = {
     formData: { name: '', email: '', message: '' },
-    modalData: { id: 0, name: '', message: '' },
+    modalData: { id: 0, name: '', message: '', createdAt: '' },
     errors: {},
     showModal: false,
     modalType: 'success',
     modalMessage: '',
+    allFeedbacks: [],
 };
 
 /**
@@ -78,6 +84,14 @@ const reducer = (state: State, action: Action): State => {
                 showModal: true,
                 modalType: 'error',
                 modalMessage: action.message,
+            };
+        case 'FETCH_ALL_SUCCESS':
+            return {
+                ...state,
+                allFeedbacks: action.payload,
+                showModal: true,
+                modalType: 'info',
+                modalMessage: 'All Feedbacks',
             };
         case 'CLOSE_MODAL':
             return { ...state, showModal: false };
@@ -156,7 +170,11 @@ export function useFeedbackForm() {
 
                 if (!res.ok) throw new Error('Network response was not ok');
                 const data: ModalData = await res.json();
-                dispatch({ type: 'SUBMIT_SUCCESS', payload: data });
+                const formattedData = {
+                    ...data,
+                    createdAt: new Date(data.createdAt).toISOString(),
+                };
+                dispatch({ type: 'SUBMIT_SUCCESS', payload: formattedData });
                 firstFieldRef.current?.focus();
             } catch {
                 dispatch({
@@ -168,6 +186,31 @@ export function useFeedbackForm() {
         [validate, state.formData]
     );
 
+    /**
+     * Fetches all feedback entries from the backend API.
+     * <p>
+     * On success, updates the state with a list of feedbacks and opens a modal to display them.
+     * On failure, shows an error modal.
+     * </p>
+     */
+    const getAllFeedbacks = useCallback(async () => {
+        try {
+            const res = await fetch('http://localhost:8080/api/feedbacks');
+            if (!res.ok) throw new Error('Network response was not ok');
+            const data: ModalData[] = await res.json();
+            const formattedData = data.map((modelData) => ({
+                ...modelData,
+                createdAt: new Date(modelData.createdAt).toISOString(),
+            }));
+            dispatch({ type: 'FETCH_ALL_SUCCESS', payload: formattedData });
+        } catch {
+            dispatch({
+                type: 'SUBMIT_ERROR',
+                message: 'Failed to fetch feedbacks. Please try again later.',
+            });
+        }
+    }, []);
+
     const handleClose = useCallback(() => dispatch({ type: 'CLOSE_MODAL' }), []);
 
     return {
@@ -176,5 +219,6 @@ export function useFeedbackForm() {
         handleChange,
         handleSubmit,
         handleClose,
+        getAllFeedbacks,
     };
 }
