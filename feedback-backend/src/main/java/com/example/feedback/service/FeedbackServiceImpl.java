@@ -76,7 +76,18 @@ public class FeedbackServiceImpl implements FeedbackService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name cannot be empty");
         }
     }
-            @Override
+
+    /**
+     * Retrieves all feedback entries from the database.
+     * <p>
+     * This method fetches all {@link com.example.feedback.model.Feedback} entities,
+     * transforms them into {@link com.example.feedback.dto.FeedbackResponse} DTOs,
+     * and returns the resulting list.
+     * </p>
+     *
+     * @return a {@link List} of {@link FeedbackResponse} objects representing all stored feedbacks
+     */
+    @Override
     public List<FeedbackResponse> getAllFeedback() {
         return feedbackRepository.findAll().stream()
                 .map(feedback -> new FeedbackResponse(feedback.getId(), feedback.getName(), feedback.getMessage(), feedback.getCreatedAt()))

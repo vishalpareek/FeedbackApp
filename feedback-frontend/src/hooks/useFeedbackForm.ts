@@ -186,6 +186,13 @@ export function useFeedbackForm() {
         [validate, state.formData]
     );
 
+    /**
+     * Fetches all feedback entries from the backend API.
+     * <p>
+     * On success, updates the state with a list of feedbacks and opens a modal to display them.
+     * On failure, shows an error modal.
+     * </p>
+     */
     const getAllFeedbacks = useCallback(async () => {
         try {
             const res = await fetch('http://localhost:8080/api/feedbacks');
