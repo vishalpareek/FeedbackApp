@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class FeedbackServiceImplTest {
+public class FeedbackServiceImplTest {
 
     @Mock
     private FeedbackRepository feedbackRepository;
@@ -24,7 +24,7 @@ class FeedbackServiceImplTest {
     private FeedbackServiceImpl feedbackService;
 
     @Test
-    void submitFeedback_shouldSaveSuccessfully() {
+    public void submitFeedback_shouldSaveSuccessfully() {
         FeedbackRequest request = new FeedbackRequest("Vishal", "Great app!", "vishal@example.com");
 
         Feedback savedFeedback = new Feedback();
@@ -46,7 +46,7 @@ class FeedbackServiceImplTest {
     }
 
     @Test
-    void submitFeedback_shouldThrowWhenNameEmpty() {
+    public void submitFeedback_shouldThrowWhenNameEmpty() {
         FeedbackRequest request = new FeedbackRequest("", "Some message", "user@example.com");
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class,
@@ -57,29 +57,7 @@ class FeedbackServiceImplTest {
     }
 
     @Test
-    void submitFeedback_shouldThrowWhenMessageEmpty() {
-        FeedbackRequest request = new FeedbackRequest("User", "", "user@example.com");
-
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
-                () -> feedbackService.submitFeedback(request));
-
-        assertTrue(exception.getReason().contains("Message cannot be empty"));
-        verify(feedbackRepository, never()).save(any());
-    }
-
-    @Test
-    void submitFeedback_shouldThrowWhenEmailEmpty() {
-        FeedbackRequest request = new FeedbackRequest("User", "Hello", "");
-
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
-                () -> feedbackService.submitFeedback(request));
-
-        assertTrue(exception.getReason().contains("Email cannot be empty"));
-        verify(feedbackRepository, never()).save(any());
-    }
-
-    @Test
-    void submitFeedback_shouldThrowWhenRepositoryFails() {
+    public void submitFeedback_shouldThrowWhenRepositoryFails() {
         FeedbackRequest request = new FeedbackRequest("Vishal", "Message", "vishal@example.com");
 
         when(feedbackRepository.save(any(Feedback.class)))
@@ -90,5 +68,28 @@ class FeedbackServiceImplTest {
 
         assertEquals("DB error", exception.getMessage());
         verify(feedbackRepository, times(1)).save(any(Feedback.class));
+    }
+
+    @Test
+    public void testMaskEmail_shortEmail() {
+        assertEquals("**@test.fi", feedbackService.maskEmail("vp@test.fi"));
+        assertEquals("**@test.fi", feedbackService.maskEmail("v@test.fi"));
+    }
+
+    @Test
+    public void testMaskEmail_longEmail() {
+        assertEquals("vi***@test.fi", feedbackService.maskEmail("vishal.pareek@test.fi"));
+    }
+
+    @Test
+    public void testValidateFeedback_InvalidName() {
+        FeedbackRequest request = new FeedbackRequest("Vishal12345", "Message", "vishal@example.com");
+        assertThrows(ResponseStatusException.class, () -> feedbackService.validateFeedback(request, "vi***@example.com"));
+    }
+
+    @Test
+    public void testValidateFeedback_ValidName() {
+        FeedbackRequest request = new FeedbackRequest("Vishal Pareek", "Message", "vishal@example.com");
+        assertDoesNotThrow(() -> feedbackService.validateFeedback(request, "vi***@example.com"));
     }
 }

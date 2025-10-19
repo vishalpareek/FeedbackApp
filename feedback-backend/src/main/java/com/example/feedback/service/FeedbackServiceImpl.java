@@ -4,6 +4,7 @@ import com.example.feedback.dto.FeedbackResponse;
 import com.example.feedback.dto.FeedbackRequest;
 import com.example.feedback.model.Feedback;
 import com.example.feedback.repository.FeedbackRepository;
+import org.assertj.core.util.VisibleForTesting;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -32,41 +33,30 @@ public class FeedbackServiceImpl implements FeedbackService {
         feedback.setEmail(feedbackRequest.getEmail());
         feedback.setMessage(feedbackRequest.getMessage());
 
-        try {
-            Feedback savedFeedback = feedbackRepository.save(feedback);
-            logger.info("Feedback saved successfully for user: {}", savedFeedback.getName());
-            logger.debug("Response DTO: id={}, name={}, message={}",
-                    savedFeedback.getId(), savedFeedback.getName(), savedFeedback.getMessage());
+        Feedback savedFeedback = feedbackRepository.save(feedback);
+        logger.info("Feedback saved successfully for user: {}", savedFeedback.getName());
+        logger.debug("Response DTO: id={}, name={}, message={}",
+                savedFeedback.getId(), savedFeedback.getName(), savedFeedback.getMessage());
 
-            return new FeedbackResponse(
-                    savedFeedback.getId(),
-                    savedFeedback.getName(),
-                    savedFeedback.getMessage()
-            );
-        } catch (Exception e) {
-            logger.error("Error saving feedback: {}", e.getMessage(), e);
-            throw e;
-        }
+        return new FeedbackResponse(
+                savedFeedback.getId(),
+                savedFeedback.getName(),
+                savedFeedback.getMessage()
+        );
     }
 
-    private void validateFeedback(FeedbackRequest feedback, String maskedEmail) {
-        if (feedback.getName() == null || feedback.getName().trim().isEmpty()) {
-            logger.error("Validation failed: name is empty for email {}", maskedEmail);
+    @VisibleForTesting
+    void validateFeedback(FeedbackRequest feedback, String maskedEmail) {
+
+        // Sample validations. as per business logic this method may contain different validations
+        if (!feedback.getName().matches("[A-Za-z ]+")) {
+            logger.error("Validation failed: Invalid name {}  for email {}", feedback.getName(), maskedEmail);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name cannot be empty");
         }
-
-        if (feedback.getMessage() == null || feedback.getMessage().trim().isEmpty()) {
-            logger.error("Validation failed: message is empty for email {}", maskedEmail);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Message cannot be empty");
-        }
-
-        if (feedback.getEmail() == null || feedback.getEmail().trim().isEmpty()) {
-            logger.error("Validation failed: email is empty");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email cannot be empty");
-        }
     }
 
-    private String maskEmail(String email) {
+    @VisibleForTesting
+    String maskEmail(String email) {
         if (email == null || !email.contains("@")) return "N/A";
         String[] parts = email.split("@");
         String prefix = parts[0];

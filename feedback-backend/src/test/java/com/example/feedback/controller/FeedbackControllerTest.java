@@ -47,11 +47,6 @@ class FeedbackControllerTest {
     @Test
     void submitFeedback_shouldReturnBadRequest_whenNameEmpty() throws Exception {
         FeedbackRequest request = new FeedbackRequest("", "Some message", "user@example.com");
-
-        Mockito.when(feedbackService.submitFeedback(any(FeedbackRequest.class)))
-                .thenThrow(new org.springframework.web.server.ResponseStatusException(
-                        org.springframework.http.HttpStatus.BAD_REQUEST, "Name is required"));
-
         mockMvc.perform(post("/api/feedbacks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -59,4 +54,36 @@ class FeedbackControllerTest {
                 .andExpect(jsonPath("$.message").value("Name is required"));
     }
 
+    @Test
+    void submitFeedback_shouldReturnBadRequest_whenMessageEmpty() throws Exception {
+        FeedbackRequest request = new FeedbackRequest("Vishal", "", "user@example.com");
+
+        mockMvc.perform(post("/api/feedback")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Message is required"));
+    }
+
+    @Test
+    void submitFeedback_shouldReturnBadRequest_whenEmailEmpty() throws Exception {
+        FeedbackRequest request = new FeedbackRequest("Vishal", "Some message", null);
+
+        mockMvc.perform(post("/api/feedbacks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Email is required"));
+    }
+
+    @Test
+    void submitFeedback_shouldReturnBadRequest_whenEmailInvalid() throws Exception {
+        FeedbackRequest request = new FeedbackRequest("Vishal", "Some message", "INVALID_EMAIL");
+
+        mockMvc.perform(post("/api/feedback")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Invalid email format"));
+    }
 }
