@@ -84,7 +84,7 @@ const reducer = (state: State, action: Action): State => {
         default:
             return state;
     }
-}
+};
 
 /**
  * Custom React hook that manages the full lifecycle of a feedback form.
